@@ -288,6 +288,9 @@ fz_new_document_writer_with_output(fz_context *ctx, fz_output *out, const char *
 		return fz_new_docx_writer_with_output(ctx, out, options);
 #endif
 
+	if (is_extension(format, "svg"))
+			return fz_new_svg_writer_with_output(ctx, out, options);
+
 	fz_throw(ctx, FZ_ERROR_ARGUMENT, "unknown output document format: %s", format);
 }
 
@@ -298,8 +301,6 @@ fz_new_document_writer_with_buffer(fz_context *ctx, fz_buffer *buffer, const cha
 	fz_output *out = fz_new_output_with_buffer(ctx, buffer);
 	fz_try(ctx)
 		wri = fz_new_document_writer_with_output(ctx, out, format, options);
-	fz_always(ctx)
-		fz_drop_output(ctx, out);
 	fz_catch(ctx)
 		fz_rethrow(ctx);
 	return wri;
